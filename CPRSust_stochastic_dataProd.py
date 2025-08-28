@@ -15,74 +15,18 @@ from CPRsust_rates import *
 from extinctionTimes import *
 from CPRSust_detEqs import *
 
-reactsCPRsust_homogeneous_detRes = [
-    {
-        'description': 'Change of strategy: cooperator to defector',
-        'probFunc' : rateMinus_detRes,
-        'probFuncVars' : ['R','varVec','N','nodeStates[2]','nodeStates[3]'],
-        'oldState' : ['nodeStates[2]'],
-        'newState' : ['nodeStates[3]']
-    },
-    {
-        'description': 'Change of strategy: defector to cooperator',
-        'probFunc' : ratePlus_detRes,
-        'probFuncVars' : ['R','varVec','N','nodeStates[2]','nodeStates[3]'],
-        'oldState' : ['nodeStates[3]'],
-        'newState' : ['nodeStates[2]']
-    }
-]
-
-reactsCPRsust_homogeneous_stocRes = [
-    {
-        'description': 'Offspring of resource',
-        'probFunc' : resBirthRate,
-        'probFuncVars' : ['varVec','b','K','nodeStates[1]'],
-        'oldState' : ['nodeStates[0]'],
-        'newState' : ['nodeStates[1]']
-    },
-    {
-        'description': 'Change of strategy: cooperator to defector',
-        'probFunc' : rateMinus,
-        'probFuncVars' : ['varVec','K','nodeStates[1]','N','nodeStates[2]','nodeStates[3]'],
-        'oldState' : ['nodeStates[2]'],
-        'newState' : ['nodeStates[3]']
-    },
-    {
-        'description' : 'Resource uptake by cooperator',
-        'probFunc' : uptakeRate,
-        'probFuncVars' : ['varVec','N','extractionRates[0]','nodeStates[1]','nodeStates[2]'],
-        'oldState' : ['nodeStates[1]'],
-        'newState' : ['nodeStates[0]']
-    },
-    {
-        'description' : 'Resource uptake by defector',
-        'probFunc' : uptakeRate,
-        'probFuncVars' : ['varVec','N','extractionRates[-1]','nodeStates[1]','nodeStates[3]'],
-        'oldState' : ['nodeStates[1]'],
-        'newState' : ['nodeStates[0]']
-    },
-    {
-        'description': 'Change of strategy: defector to cooperator',
-        'probFunc' : ratePlus,
-        'probFuncVars' : ['varVec','K','nodeStates[1]','N','nodeStates[2]','nodeStates[3]'],
-        'oldState' : ['nodeStates[3]'],
-        'newState' : ['nodeStates[2]']
-    }
-]
-
-# Tolerance for the evaluation of the extinction times
-tolerance = 1e-3
+epsilon = 1e-3
 # Number of agents
 N = 200
 # Harvesting rates and corresponding network node states (used within the code)
-extractionRates_main = [0.7,np.arange(1.1,2+tolerance,(2-1.1)/2)]
+extractionRates_main = [0.7,np.array([1.1,1.3,1.5,1.7,1.9])]
 # Each node represents either a consumer (cooperator or defector) or a slot of resource (full or empty)
 nodeStates = [0,1,2,3]
 stateLabels = ['hole','resource','cooperator','defector']
 # Carrying capacity of resource in terms of number of quanta of resource
 K = 5*N
 # Resource's birth rate
-birthRate_main = np.arange(1.,2.+tolerance,0.5)
+birthRate_main = np.array([1.,1.25,1.5,1.75,2.])
 
 # Settings for numerical simulations
 # Initial conditions
@@ -114,6 +58,7 @@ for pair in paramPairs:
 
     paramsDict = {
     'N' : N,
+    'K' : K,
     'b' : b,
     'ehatC' : extractionRates[0],
     'ehatD' : extractionRates[1],
