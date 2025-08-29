@@ -2,6 +2,20 @@ import numpy as np
 import copy
 import matplotlib.pyplot as plt
 
+def CPRSustStocSimPlot(plotsObj):
+    figSim, axSim = plt.subplots(1,2,figsize=(16,8))
+    for ax,plotObj in zip(axSim,plotsObj):
+        ax.set_title(plotObj['name'])
+        ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+        ax.set_xlabel(plotObj['xlabel'])
+        ax.set_ylabel(plotObj['ylabel'])
+        ax.set_ylim(plotObj['yLims'])
+        ax.plot(plotObj['xCommon'],plotObj['yMean'],color=plotObj['color'])
+        for kRep in range(len(plotObj['x'])):
+            ax.plot(plotObj['x'][kRep],plotObj['y'][kRep],plotObj['color'], alpha=0.1)
+        ax.grid(which='both',linestyle=':',color='k',alpha=0.25)
+    return figSim, axSim
+
 def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid):
     # Produce the grid of parameters for matplotlib
     p1_allVals = [d[paramLabels[0]] for d in paramsGrid]
