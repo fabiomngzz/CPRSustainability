@@ -16,6 +16,13 @@ def CPRSustStocSimPlot(plotsObj):
         ax.grid(which='both',linestyle=':',color='k',alpha=0.25)
     return figSim, axSim
 
+def latexHatLabel(s):
+    if s.startswith('ehat'):
+        pedix = s[-1]
+        return rf'$\hat{{e}}_{{{pedix}}}$'
+    else:
+        return s
+
 def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid):
     # Produce the grid of parameters for matplotlib
     p1_allVals = [d[paramLabels[0]] for d in paramsGrid]
@@ -37,6 +44,8 @@ def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid):
         RStatGrid[j, i] = RS
         tExtGrid[j, i] = tE
 
+    paramLabels = [latexHatLabel(l) for l in paramLabels]
+
     # Plot
     figPD, axPD = plt.subplots(1,3,figsize=(20,8))
 
@@ -49,7 +58,7 @@ def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid):
     axPD[1].set_title('Resource')
 
     PDtExt = axPD[2].pcolormesh(p1Meshgrid, p2Meshgrid, tExtGrid)
-    figPD.colorbar(PDtExt, ax=axPD[2], label='t_{ext}')
+    figPD.colorbar(PDtExt, ax=axPD[2], label='$t_{ext}$')
     axPD[2].set_title('Time to TOC')
 
     for ax in axPD:
