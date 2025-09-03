@@ -23,7 +23,7 @@ def latexHatLabel(s):
     else:
         return s
 
-def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid):
+def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid,axPD=None):
     # Produce the grid of parameters for matplotlib
     p1_allVals = [d[paramLabels[0]] for d in paramsGrid]
     p2_allVals = [d[paramLabels[1]] for d in paramsGrid]
@@ -47,7 +47,10 @@ def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid):
     paramLabels = [latexHatLabel(l) for l in paramLabels]
 
     # Plot
-    figPD, axPD = plt.subplots(1,3,figsize=(20,8))
+    if axPD is None:
+        figPD, axPD = plt.subplots(1, 3, figsize=(20, 8))
+    else:
+        figPD = axPD[0].get_figure()
 
     PDxS = axPD[0].pcolormesh(p1Meshgrid,p2Meshgrid,xStatGrid,shading='auto',vmin=0,vmax=1)
     figPD.colorbar(PDxS, ax=axPD[0], label='x*')
