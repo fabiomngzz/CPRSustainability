@@ -16,14 +16,16 @@ def CPRSustStocSimPlot(plotsObj):
         ax.grid(which='both',linestyle=':',color='k',alpha=0.25)
     return figSim, axSim
 
-def latexHatLabel(s):
+def latexLabel(s):
     if s.startswith('ehat'):
         pedix = s[-1]
         return rf'$\hat{{e}}_{{{pedix}}}$'
+    elif s == 'payoffThreshold':
+        return r'$a_{min}$'
     else:
         return s
 
-def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid,axPD=None):
+def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid,axPD=None,xStatLims=[0,1],RStatLims=[0,1],tExtLims=[0,None]):
     # Produce the grid of parameters for matplotlib
     p1_allVals = [d[paramLabels[0]] for d in paramsGrid]
     p2_allVals = [d[paramLabels[1]] for d in paramsGrid]
@@ -44,7 +46,7 @@ def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid,axPD=None):
         RStatGrid[j, i] = RS
         tExtGrid[j, i] = tE
 
-    paramLabels = [latexHatLabel(l) for l in paramLabels]
+    paramLabels = [latexLabel(l) for l in paramLabels]
 
     # Plot
     if axPD is None:
@@ -52,15 +54,15 @@ def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid,axPD=None):
     else:
         figPD = axPD[0].get_figure()
 
-    PDxS = axPD[0].pcolormesh(p1Meshgrid,p2Meshgrid,xStatGrid,shading='auto',vmin=0,vmax=1)
+    PDxS = axPD[0].pcolormesh(p1Meshgrid,p2Meshgrid,xStatGrid,shading='auto',vmin=xStatLims[0],vmax=xStatLims[1])
     figPD.colorbar(PDxS, ax=axPD[0], label='x*')
     axPD[0].set_title('Fraction of cooperators')
 
-    PDRS = axPD[1].pcolormesh(p1Meshgrid, p2Meshgrid, RStatGrid,vmin=0,vmax=1)
+    PDRS = axPD[1].pcolormesh(p1Meshgrid, p2Meshgrid, RStatGrid,vmin=RStatLims[0],vmax=RStatLims[1])
     figPD.colorbar(PDRS, ax=axPD[1], label='R*')
     axPD[1].set_title('Resource')
 
-    PDtExt = axPD[2].pcolormesh(p1Meshgrid, p2Meshgrid, tExtGrid)
+    PDtExt = axPD[2].pcolormesh(p1Meshgrid, p2Meshgrid, tExtGrid,vmin=tExtLims[0])
     figPD.colorbar(PDtExt, ax=axPD[2], label='$t_{ext}$')
     axPD[2].set_title('Time to TOC')
 
@@ -71,7 +73,7 @@ def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid,axPD=None):
         ax.set_yticks(p2_uniqueVals)
         ax.set_xticklabels([f'{val:.2f}' for val in p1_uniqueVals])
         ax.set_yticklabels([f'{val:.2f}' for val in p2_uniqueVals])
-        ax.set_xlim([1,2])
-        ax.set_ylim([1,2])
+        ax.set_xlim([np.min(p1_uniqueVals),np.max(p1_uniqueVals)])
+        ax.set_ylim([np.min(p2_uniqueVals),np.max(p2_uniqueVals)])
 
     return figPD, axPD
