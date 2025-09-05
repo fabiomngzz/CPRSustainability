@@ -6,7 +6,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import itertools
 import scipy.integrate as scint
-import copy
 plt.rcParams['font.size'] = 20
 plt.rcParams['pcolor.shading'] = 'auto'
 from helpers import *
@@ -18,15 +17,15 @@ from CPRSust_detEqs import *
 epsilon = 1e-3
 # Number of agents
 N = 200
-# Harvesting rates and corresponding network node states (used within the code)
-extractionRates_main = [0.7,np.array([1.1,1.3,1.5,1.7,1.9])]
-# Each node represents either a consumer (cooperator or defector) or a slot of resource (full or empty)
-nodeStates = [0,1,2,3]
-stateLabels = ['hole','resource','cooperator','defector']
 # Carrying capacity of resource in terms of number of quanta of resource
 K = 5*N
 # Resource's birth rate
-birthRate_main = np.array([1.,1.25,1.5,1.75,2.])
+bVec = np.array([1.,1.2]) #,1.1,1.2,1.3,1.4,1.5
+# Harvesting rates
+extractionRatesVec = [0.7/N,np.array([1.1,1.5])/N] #,1.3,1.5,1.7,1.9
+# Each node represents either a consumer (cooperator or defector) or a slot of resource (full or empty)
+nodeStates = [0,1,2,3]
+stateLabels = ['hole','resource','cooperator','defector']
 
 # Settings for numerical simulations
 # Initial conditions
@@ -39,7 +38,7 @@ tMax = 100
 # Number of repetitions of the simulation
 NReps = 4
 
-paramPairs = list(itertools.product(birthRate_main,extractionRates_main[1]))
+paramPairs = list(itertools.product(bVec,extractionRatesVec[1]))
 
 # Settings for output
 outputPath = 'output' 
@@ -54,14 +53,13 @@ os.makedirs(outputDirStocRes, exist_ok=True)
 
 for pair in paramPairs:
     b = pair[0]
-    extractionRates = [extractionRates_main[0],pair[1]]
+    extractionRates = [extractionRatesVec[0],pair[1]]
 
     paramsDict = {
     'N' : N,
     'K' : K,
     'b' : b,
-    'ehatC' : extractionRates[0],
-    'ehatD' : extractionRates[1],
+    'extractionRates' : extractionRates,
     'xi' : x0,
     'Ri' : R0
     }
@@ -80,7 +78,7 @@ for pair in paramPairs:
     }
 
     # Taking from the context the parameter values used by solve_ivp
-    paramsString = ['b','extractionRates']
+    paramsString = ['b','extractionRates','N']
     params = evalContextVar(paramsString,context)
 
     zSeries = scint.solve_ivp(HES,[0,tMax],[R0,x0],method='RK45',args=(params))
@@ -97,7 +95,11 @@ for pair in paramPairs:
         'series' : seriesObj
     }
 
-    fName = 'outMF_' + '_'.join(f"{key}{value:.2f}" for key, value in paramsDict.items()) + '.json'
+    fName = 'outMF_' + '_'.join(
+        f'{key}{value:.2g}' if isinstance(value, (int,float))
+        else f'{key}{'_'.join(f'{v:.4g}' for v in value)}'
+        for key, value in paramsDict.items()
+        ) + '.json'
     outputPathMF = outputDirMF + fName
     with open(outputPathMF, 'w') as f:
         json.dump(outputObj, f, indent = 2)
@@ -152,7 +154,11 @@ for pair in paramPairs:
         'series' : seriesObj
     }
     
-    fName = 'outDetRes_' + '_'.join(f"{key}{value:.2f}" for key, value in paramsDict.items()) + '.json'
+    fName = 'outDetRes_' + '_'.join(
+        f'{key}{value:.2g}' if isinstance(value, (int,float))
+        else f'{key}{'_'.join(f'{v:.4g}' for v in value)}'
+        for key, value in paramsDict.items()
+        ) + '.json'
     outputPathDetRes = outputDirDetRes + fName
     with open(outputPathDetRes, 'w') as f:
         json.dump(outputObj, f, indent = 2)
@@ -162,7 +168,7 @@ for pair in paramPairs:
     ############## 
 
     zSeries = np.ones(N+K,dtype=int)
-    # Vector of individuals - assignment of initial conditions
+    # Vector of variables - assignment of initial conditions
     zSeries[0:int(N*x0)] = setVec(zSeries[0:int(N*x0)],nodeStates[2])
     zSeries[int(N*x0):N] = setVec(zSeries[int(N*x0):N],nodeStates[3])
     zSeries[N:N+int(K*R0)] = setVec(zSeries[N:N+int(K*R0)],nodeStates[1])
@@ -203,7 +209,11 @@ for pair in paramPairs:
         'series' : seriesObj
     }
 
-    fName = 'outStocRes_' + '_'.join(f"{key}{value:.2f}" for key, value in paramsDict.items()) + '.json'
+    fName = 'outStocRes_' + '_'.join(
+        f'{key}{value:.2g}' if isinstance(value, (int,float))
+        else f'{key}{'_'.join(f'{v:.4g}' for v in value)}'
+        for key, value in paramsDict.items()
+        ) + '.json'
     outputPathStocRes = outputDirStocRes + fName
     with open(outputPathStocRes, 'w') as f:
         json.dump(outputObj, f, indent = 2)

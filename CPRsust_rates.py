@@ -35,13 +35,13 @@ def pPlus_detRes(resourceLevel):
 def ratePlus_detRes(resourceLevel,vec,N,coopState,defState):
     return pPlus_detRes(resourceLevel)*consumersEncounterFraction(vec,N,coopState,defState)
 
-def intrinsicUptakeRate(vec,NTotAgents,extractionRate,agentState):
-    agentsFrac = countSpecies(vec,agentState)/NTotAgents
-    return extractionRate*agentsFrac
+def intrinsicUptakeRate(vec,extractionRate,agentState):
+    NAgents = countSpecies(vec,agentState)
+    return extractionRate*NAgents
 
-def uptakeRate(vec,NTotAgents,extractionRate,resourceState,agentState):
+def uptakeRate(vec,extractionRate,resourceState,agentState):
     NRes = countSpecies(vec,resourceState)
-    return NRes*intrinsicUptakeRate(vec,NTotAgents,extractionRate,agentState)
+    return NRes*intrinsicUptakeRate(vec,extractionRate,agentState)
 
 def ratePlus(vec,carryingCapacity,resourceState,N,coopState,defState):
     return pPlus(vec,carryingCapacity,resourceState)*consumersEncounterFraction(vec,N,coopState,defState)
@@ -84,14 +84,14 @@ reactsCPRsust_homogeneous_stocRes = [
     {
         'description' : 'Resource uptake by cooperator',
         'probFunc' : uptakeRate,
-        'probFuncVars' : ['varVec','N','extractionRates[0]','nodeStates[1]','nodeStates[2]'],
+        'probFuncVars' : ['varVec','extractionRates[0]','nodeStates[1]','nodeStates[2]'],
         'oldState' : ['nodeStates[1]'],
         'newState' : ['nodeStates[0]']
     },
     {
         'description' : 'Resource uptake by defector',
         'probFunc' : uptakeRate,
-        'probFuncVars' : ['varVec','N','extractionRates[-1]','nodeStates[1]','nodeStates[3]'],
+        'probFuncVars' : ['varVec','extractionRates[-1]','nodeStates[1]','nodeStates[3]'],
         'oldState' : ['nodeStates[1]'],
         'newState' : ['nodeStates[0]']
     },

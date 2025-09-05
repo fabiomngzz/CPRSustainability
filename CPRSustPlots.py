@@ -1,6 +1,23 @@
 import numpy as np
 import copy
 import matplotlib.pyplot as plt
+import sys
+sys.path.append('/Users/fabiomenegazzo/Documents/Università/codes')
+from helpers import setVec
+
+def rebuildContext(nodeStates,data,paramsLabel='parameters',seriesLabel='series'):
+    paramsDict = data[paramsLabel]
+    context = copy.copy(paramsDict)
+    context['extractionRates'] = [context['eC'],context['eD']]
+    context['nodeStates'] = nodeStates
+    context['R'] = data[seriesLabel][0]['resource'][0]
+    N = paramsDict['N']
+    z = np.zeros(N,dtype=int)
+    z[0:int(N*paramsDict['xi'])] = setVec(z[0:int(N*paramsDict['xi'])],nodeStates[2])
+    z[int(N*paramsDict['xi']):N] = setVec(z[int(N*paramsDict['xi']):N],nodeStates[3])
+    context['varVec'] = z
+    context = paramsDict | context
+    return context
 
 def CPRSustStocSimPlot(plotsObj):
     figSim, axSim = plt.subplots(1,2,figsize=(16,8))
@@ -46,6 +63,9 @@ def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid,axPD=None,xStatL
         RStatGrid[j, i] = RS
         tExtGrid[j, i] = tE
 
+    for i,l in enumerate(paramLabels):
+        if l.startswith('e'):
+            paramLabels[i] = 'N '+ paramLabels[i]
     paramLabels = [latexLabel(l) for l in paramLabels]
 
     # Plot
