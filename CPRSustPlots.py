@@ -95,5 +95,10 @@ def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid,axPD=None,xStatL
         ax.set_yticklabels([f'{val:.2f}' for val in p2_uniqueVals])
         ax.set_xlim([np.min(p1_uniqueVals),np.max(p1_uniqueVals)])
         ax.set_ylim([np.min(p2_uniqueVals),np.max(p2_uniqueVals)])
+        xmin, xmax = ax.get_xlim()
+        ymin, ymax = ax.get_ylim()
+        low  = min(xmin, ymin)
+        high = max(xmax, ymax)
+        ax.plot([low, high], [low, high],color='r',linestyle='--',linewidth=2)
 
     return figPD, axPD

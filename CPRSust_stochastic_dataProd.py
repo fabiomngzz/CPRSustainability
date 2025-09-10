@@ -20,9 +20,9 @@ N = 200
 # Carrying capacity of resource in terms of number of quanta of resource
 K = 5*N
 # Resource's birth rate
-bVec = np.array([1.,1.2]) #,1.1,1.2,1.3,1.4,1.5
+bVec = np.array([1.,1.4,1.8]) 
 # Harvesting rates
-extractionRatesVec = [0.7/N,np.array([1.1,1.5])/N] #,1.3,1.5,1.7,1.9
+extractionRatesVec = [0.7/N,np.array([1.1,1.5,1.9])/N] 
 # Each node represents either a consumer (cooperator or defector) or a slot of resource (full or empty)
 nodeStates = [0,1,2,3]
 stateLabels = ['hole','resource','cooperator','defector']
@@ -97,7 +97,7 @@ for pair in paramPairs:
 
     fName = 'outMF_' + '_'.join(
         f'{key}{value:.2g}' if isinstance(value, (int,float))
-        else f'{key}{'_'.join(f'{v:.4g}' for v in value)}'
+        else f'{key}{"_".join(f"{v:.4g}" for v in value)}'
         for key, value in paramsDict.items()
         ) + '.json'
     outputPathMF = outputDirMF + fName
@@ -156,7 +156,7 @@ for pair in paramPairs:
     
     fName = 'outDetRes_' + '_'.join(
         f'{key}{value:.2g}' if isinstance(value, (int,float))
-        else f'{key}{'_'.join(f'{v:.4g}' for v in value)}'
+        else f'{key}{"_".join(f"{v:.4g}" for v in value)}'
         for key, value in paramsDict.items()
         ) + '.json'
     outputPathDetRes = outputDirDetRes + fName
@@ -211,7 +211,7 @@ for pair in paramPairs:
 
     fName = 'outStocRes_' + '_'.join(
         f'{key}{value:.2g}' if isinstance(value, (int,float))
-        else f'{key}{'_'.join(f'{v:.4g}' for v in value)}'
+        else f'{key}{"_".join(f"{v:.4g}" for v in value)}'
         for key, value in paramsDict.items()
         ) + '.json'
     outputPathStocRes = outputDirStocRes + fName

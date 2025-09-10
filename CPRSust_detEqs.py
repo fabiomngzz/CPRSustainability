@@ -21,14 +21,13 @@ def HES(t,z,b,extractionRates,N):
 
 def RNew_Gillespie(context,Dt):
     N = evalContextVar(['N'],context)[0]
-    K = evalContextVar(['K'],context)[0]
     b = evalContextVar(['b'],context)[0]
     R = evalContextVar(['R'],context)[0]
     z = evalContextVar(['varVec'],context)[0]
-    x = len(getSubvec(z,evalContextVar(['nodeStates'],context)[0][1]))/len(z)
+    x = len(getSubvec(z,evalContextVar(['nodeStates'],context)[0][2]))/len(z)
     extractionRates = evalContextVar(['extractionRates'],context)[0]
-    harvestTerm = x*N*extractionRates[0] + (1-x)*N*extractionRates[1]
-    KEff = K - harvestTerm
+    harvestTerm = (x*extractionRates[0] + (1-x)*extractionRates[1])*N*R/b
+    KEff = 1 - harvestTerm
     bEff = b * KEff
     A = (KEff-R)/R
     return KEff/(1 + A*np.exp(-bEff*Dt))
