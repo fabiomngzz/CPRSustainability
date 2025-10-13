@@ -63,10 +63,11 @@ def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid,axPD=None,xStatL
         RStatGrid[j, i] = RS
         tExtGrid[j, i] = tE
 
-    for i,l in enumerate(paramLabels):
+    paramLabelsPlot = np.copy(paramLabels)
+    for i,l in enumerate(paramLabelsPlot):
         if l.startswith('e'):
-            paramLabels[i] = 'N '+ paramLabels[i]
-    paramLabels = [latexLabel(l) for l in paramLabels]
+            paramLabelsPlot[i] = 'N '+ paramLabels[i]
+    paramLabelsPlot = [latexLabel(l) for l in paramLabels]
 
     # Plot
     if axPD is None:
@@ -87,8 +88,8 @@ def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid,axPD=None,xStatL
     axPD[2].set_title('Time to TOC')
 
     for ax in axPD:
-        ax.set_xlabel(paramLabels[0])
-        ax.set_ylabel(paramLabels[1])
+        ax.set_xlabel(paramLabelsPlot[0])
+        ax.set_ylabel(paramLabelsPlot[1])
         ax.set_xticks(p1_uniqueVals)
         ax.set_yticks(p2_uniqueVals)
         ax.set_xticklabels([f'{val:.2f}' for val in p1_uniqueVals])
