@@ -12,8 +12,8 @@ def eqResourceLogistic_intensiveForm(R, x, b, ehat, K=1):
 def eqCommunity(R,x,w=1):
     return -w*R*x*(1-x)
 
-def eqCommunity_knowledgeFeedback(R,x,b,e,K):
-    return 1-R/(1-e/b)-x
+def eqCommunity_knowledgeFeedback(R,x,b,e,N,K):
+    return 1-R/(1-N*e/b)-x
 
 # define the HES to be used with numpy.solve_ivp
 def HES(t,z,b,extractionRates,N,K):
@@ -24,7 +24,7 @@ def HES(t,z,b,extractionRates,N,K):
 def HES_knowledgeFeedback(t,z,b,extractionRates,N,K):
     R = z[0]
     x = z[1]
-    return  [eqResourceLogistic_extensiveForm(R, x, b, extractionRates,N,K),eqCommunity_knowledgeFeedback(R,x,b,extractionRates[0],K)]
+    return  [eqResourceLogistic_extensiveForm(R, x, b, extractionRates,N,K),eqCommunity_knowledgeFeedback(R,x,b,extractionRates[0],N,K)]
 
 
 def RNew_Gillespie(context,Dt):
