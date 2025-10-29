@@ -12,8 +12,8 @@ def resEncounterFactor(vec,carryingCapacity,resourceState):
 def resBirthRate(vec,birthrate,carryingCapacity,resourceState):
     return intrinsicResourceBirthRate(birthrate)*resEncounterFactor(vec,carryingCapacity,resourceState)
 
-def normalisedResourceLevel_stocRes(vec,carryingCapacity,resourceState,extractionRateCoop,birthrate):
-    return countSpecies(vec,resourceState)/(carryingCapacity*(1-extractionRateCoop/intrinsicResourceBirthRate(birthrate)))
+def normalisedResourceLevel_stocRes(vec,carryingCapacity,NAgents,resourceState,extractionRateCoop,birthrate):
+    return countSpecies(vec,resourceState)/(carryingCapacity*(1-NAgents*extractionRateCoop/intrinsicResourceBirthRate(birthrate)))
 
 def consumersEncounterFraction(vec,N,coopState,defState):
     NCoops = countSpecies(vec,coopState)
@@ -26,12 +26,12 @@ def pMinus(vec,carryingCapacity,resourceState):
 def rateMinus(vec,carryingCapacity,resourceState,N,coopState,defState):
     return pMinus(vec,carryingCapacity,resourceState)*consumersEncounterFraction(vec,N,coopState,defState)
 
-def pMinus_knowledgeFeedback_stocRes(vec,carryingCapacity,resourceState,extractionRateCoop,birthrate):
-    return normalisedResourceLevel_stocRes(vec,carryingCapacity,resourceState,extractionRateCoop,birthrate)
+def pMinus_knowledgeFeedback_stocRes(vec,carryingCapacity,NAgents,resourceState,extractionRateCoop,birthrate):
+    return normalisedResourceLevel_stocRes(vec,carryingCapacity,NAgents,resourceState,extractionRateCoop,birthrate)
 
-def rateMinus_knowledgeFeedback_stocRes(vec,coopState,resourceState,birthrate,carryingCapacity,extractionRateCoop):
+def rateMinus_knowledgeFeedback_stocRes(vec,coopState,resourceState,birthrate,carryingCapacity,NAgents,extractionRateCoop):
     NCoops = countSpecies(vec,coopState)
-    return NCoops*pMinus_knowledgeFeedback_stocRes(vec,carryingCapacity,resourceState,extractionRateCoop,birthrate)
+    return NCoops*pMinus_knowledgeFeedback_stocRes(vec,carryingCapacity,NAgents,resourceState,extractionRateCoop,birthrate)
 
 def pMinus_detRes(resourceLevel):
     return 0.5*(1+resourceLevel)
@@ -45,12 +45,12 @@ def pPlus(vec,carryingCapacity,resourceState):
 def ratePlus(vec,carryingCapacity,resourceState,N,coopState,defState):
     return pPlus(vec,carryingCapacity,resourceState)*consumersEncounterFraction(vec,N,coopState,defState)
 
-def pPlus_knowledgeFeedback_stocRes(vec,carryingCapacity,resourceState,extractionRateCoop,birthrate):
-    return 1 - normalisedResourceLevel_stocRes(vec,carryingCapacity,resourceState,extractionRateCoop,birthrate)
+def pPlus_knowledgeFeedback_stocRes(vec,carryingCapacity,NAgents,resourceState,extractionRateCoop,birthrate):
+    return 1 - normalisedResourceLevel_stocRes(vec,carryingCapacity,NAgents,resourceState,extractionRateCoop,birthrate)
 
-def ratePlus_knowledgeFeedback_stocRes(vec,defState,resourceState,birthrate,carryingCapacity,extractionRateCoop):
+def ratePlus_knowledgeFeedback_stocRes(vec,defState,resourceState,birthrate,carryingCapacity,NAgents,extractionRateCoop):
     NDefs = countSpecies(vec,defState)
-    return NDefs*pPlus_knowledgeFeedback_stocRes(vec,carryingCapacity,resourceState,extractionRateCoop,birthrate)
+    return NDefs*pPlus_knowledgeFeedback_stocRes(vec,carryingCapacity,NAgents,resourceState,extractionRateCoop,birthrate)
 
 def pPlus_detRes(resourceLevel):
     return 0.5*(1-resourceLevel)
@@ -132,7 +132,7 @@ reactsCPRsust_homogeneous_knowledgeFeedback_stocRes = [
     {
         'description': 'Change of strategy: cooperator to defector',
         'probFunc' : rateMinus_knowledgeFeedback_stocRes,
-        'probFuncVars' : ['varVec','nodeStates[2]','nodeStates[1]','b','K','extractionRates[0]'],
+        'probFuncVars' : ['varVec','nodeStates[2]','nodeStates[1]','b','K','N','extractionRates[0]'],
         'oldState' : ['nodeStates[2]'],
         'newState' : ['nodeStates[3]']
     },
@@ -153,7 +153,7 @@ reactsCPRsust_homogeneous_knowledgeFeedback_stocRes = [
     {
         'description': 'Change of strategy: defector to cooperator',
         'probFunc' : ratePlus_knowledgeFeedback_stocRes,
-        'probFuncVars' : ['varVec','nodeStates[3]','nodeStates[1]','b','K','extractionRates[0]'],
+        'probFuncVars' : ['varVec','nodeStates[3]','nodeStates[1]','b','K','N','extractionRates[0]'],
         'oldState' : ['nodeStates[3]'],
         'newState' : ['nodeStates[2]']
     }
