@@ -26,8 +26,10 @@ def CPRSustStocSimPlot(plotsObj):
         ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
         ax.set_xlabel(plotObj['xlabel'])
         ax.set_ylabel(plotObj['ylabel'])
-        ax.set_ylim(plotObj['yLims'])
-        ax.plot(plotObj['xCommon'],plotObj['yMean'],color=plotObj['color'])
+        if len(plotObj['yLims']):
+            ax.set_ylim(plotObj['yLims'])
+        if len(plotObj['yMean'])>0:
+            ax.plot(plotObj['xCommon'],plotObj['yMean'],color=plotObj['color'])
         for kRep in range(len(plotObj['x'])):
             ax.plot(plotObj['x'][kRep],plotObj['y'][kRep],plotObj['color'], alpha=0.1)
         ax.grid(which='both',linestyle=':',color='k',alpha=0.25)
