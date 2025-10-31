@@ -26,6 +26,8 @@ def CPRSustStocSimPlot(plotsObj):
         ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
         ax.set_xlabel(plotObj['xlabel'])
         ax.set_ylabel(plotObj['ylabel'])
+        if len(plotObj['xLims']):
+            ax.set_xlim(plotObj['xLims'])
         if len(plotObj['yLims']):
             ax.set_ylim(plotObj['yLims'])
         if len(plotObj['yMean'])>0:
