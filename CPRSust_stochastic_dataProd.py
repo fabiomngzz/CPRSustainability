@@ -20,9 +20,9 @@ N = 200
 # Carrying capacity of resource in terms of number of quanta of resource
 K = 5*N
 # Resource's birth rate
-bVec = np.array([1.,1.1,1.2,1.3,1.4,1.5,]) 
+bVec = np.array([1.]) 
 # Harvesting rates
-extractionRatesVec = [0.7/N,np.array([1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.])/N] 
+extractionRatesVec = [0.5/N,np.array([1.3])/N] 
 # Each node represents either a consumer (cooperator or defector) or a slot of resource (full or empty)
 nodeStates = [0,1,2,3]
 stateLabels = ['hole','resource','cooperator','defector']
@@ -35,13 +35,19 @@ R0 = 0.5
 # Length of the simulation
 tMax = 100
 
+runObj = {
+    'MF' : True,
+    'detRes' : False,
+    'stocRes' : True
+}
+
 # Number of repetitions of the simulation
-NReps = 4
+NReps = 160
 
 paramPairs = list(itertools.product(bVec,extractionRatesVec[1]))
 
 # Settings for output
-outputPath = 'output' 
+outputPath = 'output/knowledgeFeedback' 
 if not os.path.isdir(outputPath):
     raise FileNotFoundError(f'Folder for the outputs not found at relative path: {outputPath}. Create it before running the program.')
 outputDirMF = outputPath + '/MF/'
@@ -63,7 +69,7 @@ for pair in paramPairs:
     'b' : b,
     'extractionRates' : extractionRates,
     'xi' : x0,
-    'Ri' : R0
+    'Ri' : R0,
     }
 
     ###############
@@ -80,10 +86,10 @@ for pair in paramPairs:
     }
 
     # Taking from the context the parameter values used by solve_ivp
-    paramsString = ['b','extractionRates','N']
+    paramsString = ['b','extractionRates','N','K']
     params = evalContextVar(paramsString,context)
 
-    zSeries = scint.solve_ivp(HES,[0,tMax],[R0,x0],method='RK45',args=(params))
+    zSeries = scint.solve_ivp(HES_knowledgeFeedback,[0,tMax],[R0,x0],method='RK45',args=(params))
 
     # Unpack the resulting object
     seriesObj = {
@@ -189,7 +195,7 @@ for pair in paramPairs:
         vecSim_temp = [evalContextVar(['varVec'],context)[0]]
 
         while tSim_temp[-1] < tMax:
-            absState, objNew = GillespieStep(context,reactsCPRsust_homogeneous_stocRes)
+            absState, objNew = GillespieStep(context,reactsCPRsust_homogeneous_knowledgeFeedback_stocRes)
             if absState:
                 break
 

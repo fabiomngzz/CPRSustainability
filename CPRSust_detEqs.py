@@ -3,7 +3,7 @@ import sys
 sys.path.append('/Users/fabiomenegazzo/Documents/Università/codes')
 from helpers import evalContextVar, getSubvec
 
-def eqResourceLogistic_extensiveForm(R, x, b, eExt, N, K):
+def eqResourceLogistic_extensiveForm(R, x, b, eExt, N):
     return b*(R*(1-R)) - R*N*(x*eExt[0] + (1-x)*eExt[1])
 
 def eqResourceLogistic_intensiveForm(R, x, b, ehat, K=1):
@@ -16,15 +16,15 @@ def eqCommunity_knowledgeFeedback(R,x,b,e,N,K):
     return 1-R/(1-N*e/b)-x
 
 # define the HES to be used with numpy.solve_ivp
-def HES(t,z,b,extractionRates,N,K):
+def HES(t,z,b,extractionRates,N):
     R = z[0]
     x = z[1]
-    return [eqResourceLogistic_extensiveForm(R, x, b, extractionRates,N,K),eqCommunity(R, x)]
+    return [eqResourceLogistic_extensiveForm(R, x, b, extractionRates,N),eqCommunity(R, x)]
 
 def HES_knowledgeFeedback(t,z,b,extractionRates,N,K):
     R = z[0]
     x = z[1]
-    return  [eqResourceLogistic_extensiveForm(R, x, b, extractionRates,N,K),eqCommunity_knowledgeFeedback(R,x,b,extractionRates[0],N,K)]
+    return  [eqResourceLogistic_extensiveForm(R, x, b, extractionRates,N),eqCommunity_knowledgeFeedback(R,x,b,extractionRates[0],N,K)]
 
 
 def RNew_Gillespie(context,Dt):

@@ -32,13 +32,17 @@ def CPRSustStocSimPlot(plotsObj):
             ax.set_ylim(plotObj['yLims'])
         if len(plotObj['yMean'])>0:
             ax.plot(plotObj['xCommon'],plotObj['yMean'],color=plotObj['color'])
+        if plotObj['xLogScale']:
+            ax.set_xscale('log')
+        if plotObj['yLogScale']:
+            ax.set_yscale('log')
         for kRep in range(len(plotObj['x'])):
-            ax.plot(plotObj['x'][kRep],plotObj['y'][kRep],plotObj['color'], alpha=0.1)
+            ax.plot(plotObj['x'][kRep],plotObj['y'][kRep],plotObj['color'], alpha=plotObj['alphaSingle'])
         ax.grid(which='both',linestyle=':',color='k',alpha=0.25)
     return figSim, axSim
 
 def latexLabel(s):
-    if s.startswith('ehat'):
+    if s.startswith('e'):
         pedix = s[-1]
         return rf'$\hat{{e}}_{{{pedix}}}$'
     elif s == 'payoffThreshold':
@@ -68,9 +72,9 @@ def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid,axPD=None,xStatL
         tExtGrid[j, i] = tE
 
     paramLabelsPlot = np.copy(paramLabels)
-    for i,l in enumerate(paramLabelsPlot):
-        if l.startswith('e'):
-            paramLabelsPlot[i] = 'N '+ paramLabels[i]
+    # for i,l in enumerate(paramLabelsPlot):
+    #     if l.startswith('e'):
+    #         paramLabelsPlot[i] = 'N '+ paramLabels[i]
     paramLabelsPlot = [latexLabel(l) for l in paramLabels]
 
     # Plot
@@ -81,15 +85,15 @@ def CPRSustPhaseDiagram(xStat,RStat,tExt,paramLabels,paramsGrid,axPD=None,xStatL
 
     PDxS = axPD[0].pcolormesh(p1Meshgrid,p2Meshgrid,xStatGrid,shading='auto',vmin=xStatLims[0],vmax=xStatLims[1])
     figPD.colorbar(PDxS, ax=axPD[0], label='x*')
-    axPD[0].set_title('Fraction of cooperators')
+    axPD[0].set_title('Fraction of cooperators',y=1.05)
 
     PDRS = axPD[1].pcolormesh(p1Meshgrid, p2Meshgrid, RStatGrid,vmin=RStatLims[0],vmax=RStatLims[1])
     figPD.colorbar(PDRS, ax=axPD[1], label='R*')
-    axPD[1].set_title('Resource')
+    axPD[1].set_title('Resource',y=1.05)
 
     PDtExt = axPD[2].pcolormesh(p1Meshgrid, p2Meshgrid, tExtGrid,vmin=tExtLims[0])
     figPD.colorbar(PDtExt, ax=axPD[2], label='$t_{ext}$')
-    axPD[2].set_title('Time to TOC')
+    axPD[2].set_title('Time to TOC',y=1.05)
 
     for ax in axPD:
         ax.set_xlabel(paramLabelsPlot[0])
