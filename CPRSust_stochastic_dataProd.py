@@ -42,12 +42,12 @@ runObj = {
 }
 
 # Number of repetitions of the simulation
-NReps = 100
+NReps = 50
 
 paramPairs = list(itertools.product(bVec,extractionRatesVec[1]))
 
 # Settings for output
-outputPath = 'output/knowledgeFeedback' 
+outputPath = 'output/kFpP' 
 if not os.path.isdir(outputPath):
     raise FileNotFoundError(f'Folder for the outputs not found at relative path: {outputPath}. Create it before running the program.')
 outputDirMF = outputPath + '/MF/'
@@ -89,7 +89,8 @@ for pair in paramPairs:
     paramsString = ['b','extractionRates','N','K']
     params = evalContextVar(paramsString,context)
 
-    zSeries = scint.solve_ivp(HES_knowledgeFeedback,[0,tMax],[R0,x0],method='RK45',args=(params))
+    tEvalDet = np.linspace(0,tMax,1000)
+    zSeries = scint.solve_ivp(HES_kFpP,[0,tMax],[R0,x0],method='RK45',t_eval=tEvalDet,args=(params))
 
     # Unpack the resulting object
     seriesObj = {
@@ -195,7 +196,7 @@ for pair in paramPairs:
         vecSim_temp = [evalContextVar(['varVec'],context)[0]]
 
         while tSim_temp[-1] < tMax:
-            absState, objNew = GillespieStep(context,reactsCPRsust_homogeneous_knowledgeFeedback_stocRes)
+            absState, objNew = GillespieStep(context,reactsCPRsust_homogeneous_kFpP_stocRes)
             if absState:
                 break
 

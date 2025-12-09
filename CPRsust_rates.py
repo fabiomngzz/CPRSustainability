@@ -169,7 +169,8 @@ reactsCPRsust_homogeneous_knowledgeFeedback_stocRes = [
     }
 ]
 
-reactsCPRsust_homgeneous_kFpP_stocRes = [
+# "knowledge feedback and peer pressure"
+reactsCPRsust_homogeneous_kFpP_stocRes = [
     {
         'description': 'Offspring of resource',
         'probFunc' : resBirthRate,
