@@ -42,7 +42,7 @@ runObj = {
 }
 
 # Number of repetitions of the simulation
-NReps = 160
+NReps = 100
 
 paramPairs = list(itertools.product(bVec,extractionRatesVec[1]))
 
