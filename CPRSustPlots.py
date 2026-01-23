@@ -31,7 +31,8 @@ def CPRSustStocSimPlot(plotsObj):
         if len(plotObj['yLims']):
             ax.set_ylim(plotObj['yLims'])
         if len(plotObj['yMean'])>0:
-            ax.plot(plotObj['xCommon'],plotObj['yMean'],color=plotObj['color'])
+            for xC,yC in zip(plotObj['xCommon'],plotObj['yMean']):
+                ax.plot(xC,yC,color=plotObj['color'])
         if plotObj['xLogScale']:
             ax.set_xscale('log')
         if plotObj['yLogScale']:

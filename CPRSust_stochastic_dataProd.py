@@ -16,9 +16,9 @@ from CPRSust_detEqs import *
 
 epsilon = 1e-3
 # Number of agents
-N = 200
+N = 500
 # Carrying capacity of resource in terms of number of quanta of resource
-K = 5*N
+K = 4*N
 # Resource's birth rate
 bVec = np.array([1.]) 
 # Harvesting rates
@@ -42,7 +42,7 @@ runObj = {
 }
 
 # Number of repetitions of the simulation
-NReps = 50
+NReps = 100
 
 paramPairs = list(itertools.product(bVec,extractionRatesVec[1]))
 

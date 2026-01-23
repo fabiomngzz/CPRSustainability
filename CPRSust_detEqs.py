@@ -6,8 +6,8 @@ from helpers import evalContextVar, getSubvec
 def eqResourceLogistic_extensiveForm(R, x, b, eExt, N):
     return b*(R*(1-R)) - R*N*(x*eExt[0] + (1-x)*eExt[1])
 
-def eqResourceLogistic_intensiveForm(R, x, b, ehat, K=1):
-    return b*(R*(1-R/K) - R*(x*ehat[0] + (1-x)*ehat[1]))
+def eqResourceLogistic_generalPayoffMat(R,x,b,N,ecc,ecd,edc,edd):
+    return b*R*(1-R) - R*N*(x*x*ecc + x*(1-x)*(ecd+edc) + (1-x)*(1-x)*edd)
 
 def eqCommunity(R,x,w=1):
     return -w*R*x*(1-x)
@@ -22,18 +22,24 @@ def eqCommunity_kFpP(R,x,b,e,N):
 def HES(t,z,b,extractionRates,N):
     R = z[0]
     x = z[1]
-    return [eqResourceLogistic_extensiveForm(R, x, b, extractionRates,N),eqCommunity(R, x)]
+    return [eqResourceLogistic_extensiveForm(R, x, b, extractionRates, N),eqCommunity(R, x)]
 
 def HES_knowledgeFeedback(t,z,b,extractionRates,N,K):
     R = z[0]
     x = z[1]
     return  [eqResourceLogistic_extensiveForm(R, x, b, extractionRates,N),eqCommunity_knowledgeFeedback(R,x,b,extractionRates[0],N,K)]
 
-    # "knowledge feedback and peer pressure"
+# "knowledge feedback and peer pressure"
 def HES_kFpP(t,z,b,extractionRates,N,K):
     R = z[0]
     x = z[1]
-    return  [eqResourceLogistic_extensiveForm(R, x, b, extractionRates,N),eqCommunity_kFpP(R,x,b,extractionRates[0],N)]
+    return  [eqResourceLogistic_extensiveForm(R, x, b, extractionRates, N),eqCommunity_kFpP(R,x,b,extractionRates[0],N)]
+
+def HES_kFpP_generalPayoffMat(t,z,b,extractionRates,N,K):
+    R = z[0]
+    x = z[1]
+    ecc, ecd, edc, edd = np.array(extractionRates).ravel()
+    return  [eqResourceLogistic_generalPayoffMat(R, x, b, N, ecc, ecd, edc, edd),eqCommunity_kFpP(R,x,b,ecc,N)]
 
 def RNew_Gillespie(context,Dt):
     N = evalContextVar(['N'],context)[0]

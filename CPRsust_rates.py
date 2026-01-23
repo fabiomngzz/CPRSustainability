@@ -76,6 +76,18 @@ def uptakeRate(vec,extractionRate,resourceState,agentState):
     NRes = countSpecies(vec,resourceState)
     return NRes*intrinsicUptakeRate(vec,extractionRate,agentState)
 
+def harvestRateCoop_generalPayoffMatrix(vec,resourceState,coopState,defState,extractionRateCoopCoop,extractionRateCoopDef):
+    NRes = countSpecies(vec,resourceState)
+    NCoops = countSpecies(vec,coopState)
+    NDefs = countSpecies(vec,defState)
+    return NCoops*NRes*((NCoops-1)*extractionRateCoopCoop + NDefs*extractionRateCoopDef)/(NCoops+NDefs-1)
+
+def harvestRateDef_generalPayoffMatrix(vec,resourceState,coopState,defState,extractionRateDefCoop,extractionRateDefDef):
+    NRes = countSpecies(vec,resourceState)
+    NCoops = countSpecies(vec,coopState)
+    NDefs = countSpecies(vec,defState)
+    return NDefs*NRes*(NCoops*extractionRateDefCoop + NDefs*extractionRateDefDef)/(NCoops+NDefs-1)
+
 reactsCPRsust_homogeneous_detRes = [
     {
         'description': 'Change of strategy: cooperator to defector',
@@ -181,28 +193,28 @@ reactsCPRsust_homogeneous_kFpP_stocRes = [
     {
         'description': 'Change of strategy: cooperator to defector',
         'probFunc' : rateMinus_kFpP_stocRes,
-        'probFuncVars' : ['varVec','nodeStates[2]','nodeStates[3]','nodeStates[1]','b','K','N','extractionRates[0]'],
+        'probFuncVars' : ['varVec','nodeStates[2]','nodeStates[3]','nodeStates[1]','b','K','N','extractionRates[0][0]'],
         'oldState' : ['nodeStates[2]'],
         'newState' : ['nodeStates[3]']
     },
     {
         'description' : 'Resource uptake by cooperator',
-        'probFunc' : uptakeRate,
-        'probFuncVars' : ['varVec','extractionRates[0]','nodeStates[1]','nodeStates[2]'],
+        'probFunc' : harvestRateCoop_generalPayoffMatrix,
+        'probFuncVars' : ['varVec','nodeStates[1]','nodeStates[2]','nodeStates[3]','extractionRates[0][0]','extractionRates[0][1]'],
         'oldState' : ['nodeStates[1]'],
         'newState' : ['nodeStates[0]']
     },
     {
         'description' : 'Resource uptake by defector',
-        'probFunc' : uptakeRate,
-        'probFuncVars' : ['varVec','extractionRates[-1]','nodeStates[1]','nodeStates[3]'],
+        'probFunc' : harvestRateDef_generalPayoffMatrix,
+        'probFuncVars' : ['varVec','nodeStates[1]','nodeStates[2]','nodeStates[3]','extractionRates[1][0]','extractionRates[1][1]'],
         'oldState' : ['nodeStates[1]'],
         'newState' : ['nodeStates[0]']
     },
     {
         'description': 'Change of strategy: defector to cooperator',
         'probFunc' : ratePlus_kFpP_stocRes,
-        'probFuncVars' : ['varVec','nodeStates[2]','nodeStates[3]','nodeStates[1]','b','K','N','extractionRates[0]'],
+        'probFuncVars' : ['varVec','nodeStates[2]','nodeStates[3]','nodeStates[1]','b','K','N','extractionRates[0][0]'],
         'oldState' : ['nodeStates[3]'],
         'newState' : ['nodeStates[2]']
     }
