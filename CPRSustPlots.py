@@ -8,7 +8,15 @@ from helpers import setVec
 def rebuildContext(nodeStates,data,paramsLabel='parameters',seriesLabel='series'):
     paramsDict = data[paramsLabel]
     context = copy.copy(paramsDict)
-    context['extractionRates'] = [context['eC'],context['eD']]
+    # Caso 1x2
+    if 'eC' in context and 'eD' in context:
+        context['extractionRates'] = [context['eC'], context['eD']]
+    # Caso 2x2
+    elif all(k in context for k in ('eCC', 'eCD', 'eDC', 'eDD')):
+        context['extractionRates'] = [
+            [context['eCC'], context['eCD']],
+            [context['eDC'], context['eDD']]
+        ]
     context['nodeStates'] = nodeStates
     context['R'] = data[seriesLabel][0]['resource'][0]
     N = paramsDict['N']

@@ -22,7 +22,8 @@ K = 4*N
 # Resource's birth rate
 b = 1.
 # Harvesting rates
-extractionRates = b*np.array([[0.5,0.5],[1.5,1.5]])/N
+extractionRatesReduced = [[0.5,0.5],[1.5,1.5]]
+extractionRates = [[b*e/N for e in row] for row in extractionRatesReduced]
 # Each node represents either a consumer (cooperator or defector) or a slot of resource (full or empty)
 nodeStates = [0,1,2,3]
 stateLabels = ['hole','resource','cooperator','defector']
@@ -41,7 +42,7 @@ runObj = {
 }
 
 # Number of repetitions of the simulation
-NReps = 10
+NReps = 90
 
 # Settings for output
 outputPath = 'output/kFpP_genPayoffMat' 
@@ -95,13 +96,12 @@ outputObj = {
 
 fName = 'outMF_' + '_'.join(
     f'{key}{value:.2g}' if isinstance(value, (int,float))
-    else f'{key}{"_".join(f"{v:.4g}" for v in value)}'
+    else f'{key}{"_".join(f"{v:.5g}" for row in value for v in row)}'
     for key, value in paramsDict.items()
     ) + '.json'
 outputPathMF = outputDirMF + fName
 with open(outputPathMF, 'w') as f:
     json.dump(outputObj, f, indent = 2)
-
 
 ##############
 # STOCHASTIC #
@@ -151,7 +151,7 @@ outputObj = {
 
 fName = 'outStocRes_' + '_'.join(
     f'{key}{value:.2g}' if isinstance(value, (int,float))
-    else f'{key}{"_".join(f"{v:.4g}" for v in value)}'
+    else f'{key}{"_".join(f"{v:.5g}" for row in value for v in row)}'
     for key, value in paramsDict.items()
     ) + '.json'
 outputPathStocRes = outputDirStocRes + fName
