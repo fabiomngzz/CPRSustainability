@@ -39,15 +39,17 @@ def CPRSustStocSimPlot(plotsObj):
         if len(plotObj['yLims']):
             ax.set_ylim(plotObj['yLims'])
         if len(plotObj['yMean'])>0:
-            for xC,yC in zip(plotObj['xCommon'],plotObj['yMean']):
-                ax.plot(xC,yC,color=plotObj['color'])
+            for xC,yC,lSC,labC in zip(plotObj['xCommon'],plotObj['yMean'],plotObj['meanLineStyles'],plotObj['meanLabels']):
+                ax.plot(xC,yC,color=plotObj['color'],linestyle=lSC,label=labC)
         if plotObj['xLogScale']:
             ax.set_xscale('log')
         if plotObj['yLogScale']:
             ax.set_yscale('log')
         for kRep in range(len(plotObj['x'])):
-            ax.plot(plotObj['x'][kRep],plotObj['y'][kRep],plotObj['color'], alpha=plotObj['alphaSingle'])
+            label = 'Stochastic' if kRep == 0 else '_nolegend_'
+            ax.plot(plotObj['x'][kRep],plotObj['y'][kRep],plotObj['color'], alpha=plotObj['alphaSingle'], label=label)
         ax.grid(which='both',linestyle=':',color='k',alpha=0.25)
+        ax.legend()
     return figSim, axSim
 
 def latexLabel(s):
