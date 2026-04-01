@@ -21,6 +21,8 @@ N = 500
 K = 4*N
 # Resource's birth rate
 b = 1.
+# Speed of dynamics of change of strategies
+nu = 0.29553
 # Harvesting rates
 extractionRatesReduced = [[0.5,0.5],[1.5,1.5]]
 extractionRates = [[b*e/N for e in row] for row in extractionRatesReduced]
@@ -42,7 +44,7 @@ runObj = {
 }
 
 # Number of repetitions of the simulation
-NReps = 90
+NReps = 100
 
 # Settings for output
 outputPath = 'output/kFpP_genPayoffMat' 
@@ -54,12 +56,13 @@ outputDirStocRes = outputPath + '/stocRes/'
 os.makedirs(outputDirStocRes, exist_ok=True)
 
 paramsDict = {
-'N' : N,
-'K' : K,
-'b' : b,
-'extractionRates' : extractionRates,
-'xi' : x0,
-'Ri' : R0,
+    'N' : N,
+    'K' : K,
+    'b' : b,
+    'extractionRates' : extractionRates,
+    'xi' : x0,
+    'Ri' : R0,
+    'nu' : nu
 }
 
 ###############
@@ -72,11 +75,12 @@ context = {
     'b' : b,
     'K' : K,
     'extractionRates' : extractionRates,
-    'nodeStates' : nodeStates
+    'nodeStates' : nodeStates,
+    'nu' : nu
 }
 
 # Taking from the context the parameter values used by solve_ivp
-paramsString = ['b','extractionRates','N','K']
+paramsString = ['b','extractionRates','N','K','nu']
 params = evalContextVar(paramsString,context)
 
 tEvalDet = np.linspace(0,tMax,1000)
